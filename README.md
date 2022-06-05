@@ -1,10 +1,14 @@
 # Store
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.0.0.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.0.0 based on the tutorial at [Domini Code](https://www.youtube.com/c/DominiCode) ([🅰️ Curso Angular en Español - Tutorial de Angular 12 desde cero](https://www.youtube.com/watch?v=i-oYrcNtc2s)).
 
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+
+## Mock server
+
+Run `npm run serverAPI` for a mock db. Navigate to `http://localhost:3000/`. Prerequsite `npm install -g json-server`.
 
 ## Code scaffolding
 
