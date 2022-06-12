@@ -150,6 +150,27 @@
       "data": "6/12/2022",
       "pickup": false,
       "id": 3
+    },
+    {
+      "name": "Delivery",
+      "shippingAddress": "Mi casita",
+      "city": "Mexico",
+      "data": "6/12/2022",
+      "isDelivery": true,
+      "id": 4
+    },
+    {
+      "name": "Pickup",
+      "store": {
+        "id": 5,
+        "name": "Monmouth St",
+        "address": "11 Monmouth Street",
+        "city": "London",
+        "openingHours": "10:00 - 14:00 and 17:00 - 20:30"
+      },
+      "data": "6/12/2022",
+      "isDelivery": false,
+      "id": 5
     }
   ],
   "detailsOrders": [
@@ -190,6 +211,33 @@
       ],
       "orderId": 3,
       "id": 3
+    },
+    {
+      "details": [
+        {
+          "productId": 1,
+          "productName": "Essential TypeScript 4: From Beginner to Pro",
+          "quantity": 1
+        },
+        {
+          "productId": 2,
+          "productName": "Hackeando el cerebro de tus compradores: PsychoGrowth",
+          "quantity": 1
+        }
+      ],
+      "orderId": 4,
+      "id": 4
+    },
+    {
+      "details": [
+        {
+          "productId": 5,
+          "productName": "GoPro HERO9 Black - Waterproof Action Camera with Front LCD",
+          "quantity": 1
+        }
+      ],
+      "orderId": 5,
+      "id": 5
     }
   ]
 }
