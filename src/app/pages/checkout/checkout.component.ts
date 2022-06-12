@@ -21,7 +21,7 @@ export class CheckoutComponent implements OnInit {
     city: ''
   };
 
-  isDelivery: boolean = false;
+  isDelivery: boolean = true;
 
   cart: Product[] = [];
   stores: Store[] = [];
@@ -43,7 +43,7 @@ export class CheckoutComponent implements OnInit {
     const data = {
       ...formData,
       data: this.getCurrentDate(),
-      pickup: this.isDelivery
+      isDelivery: this.isDelivery
     }
     this.dataServiceSvc.saveOrder(data).pipe(
       tap(res => console.log('Order ->', res)),
@@ -52,7 +52,6 @@ export class CheckoutComponent implements OnInit {
         return this.dataServiceSvc.saveDetailsOrder({ details, orderId })
       }),
       tap(res => this.router.navigate(['/checkout/thank-you-page'])),
-      delay(2000),
       tap(res => this.shoppingCartSvc.resetCart())
     ).subscribe();
   }

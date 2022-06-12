@@ -42,7 +42,7 @@ export class ShoppingCartService {
     if (isProductInCart) {
       isProductInCart.qty += 1;
     } else {
-      this.products.push({... product, qty:1});
+      this.products.push({ ...product, qty: 1 });
     }
     this.cartSubject.next(this.products);
   }
@@ -53,7 +53,7 @@ export class ShoppingCartService {
     this.calcTotal();
   }
 
-  resetCart():void{
+  resetCart(): void {
     this.cartSubject.next([]);
     this.totalSubject.next(0);
     this.quantitySubject.next(0);
