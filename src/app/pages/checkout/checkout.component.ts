@@ -7,6 +7,7 @@ import { Store } from 'src/app/shared/interfaces/stores.interface';
 import { DataService } from 'src/app/shared/services/data.services';
 import { ShoppingCartService } from 'src/app/shared/services/shopping-cart.service';
 import { Product } from '../products/interfaces/product.interface';
+import { ProductsService } from '../products/services/products.service';
 
 @Component({
   selector: 'app-checkout',
@@ -28,7 +29,8 @@ export class CheckoutComponent implements OnInit {
 
   constructor(private router: Router,
     private dataServiceSvc: DataService,
-    private shoppingCartSvc: ShoppingCartService) { }
+    private shoppingCartSvc: ShoppingCartService,
+    private productSvc: ProductsService) { }
 
   ngOnInit(): void {
     this.getStores();
@@ -70,10 +72,16 @@ export class CheckoutComponent implements OnInit {
     const details: Details[] = [];
     this.cart.forEach((product: Product) => {
       const { id: productId, name: productName, qty: quantity, stock } = product;
+      const updateStock = (stock - quantity);
+      // Esto es responsabilidad del back actualizar al obtener la peticion de order
+      this.productSvc.updateStock(productId, updateStock).pipe(
+        tap(res => console.log(res))
+      ).subscribe();
       details.push({ productId, productName, quantity });
     });
     return details;
   }
+
   private getDataCart(): void {
     this.shoppingCartSvc.cartAction$.pipe(
       tap((products: Product[]) => this.cart = products)
