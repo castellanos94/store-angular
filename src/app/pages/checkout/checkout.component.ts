@@ -1,4 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { delay, switchMap, tap } from 'rxjs';
+import { Details } from 'src/app/shared/interfaces/order.interface';
+import { Store } from 'src/app/shared/interfaces/stores.interface';
+import { DataService } from 'src/app/shared/services/data.services';
+import { ShoppingCartService } from 'src/app/shared/services/shopping-cart.service';
+import { Product } from '../products/interfaces/product.interface';
 
 @Component({
   selector: 'app-checkout',
@@ -12,27 +20,64 @@ export class CheckoutComponent implements OnInit {
     shippingAddress: '',
     city: ''
   };
-  stores = [ {
-    "id": 1,
-    "name": "Park Row at Beekman St",
-    "address": "38 Park Row",
-    "city": "New York",
-    "openingHours": "10:00 - 14:00 and 17:00 - 20:30"
-  },
-  {
-    "id": 2,
-    "name": "Store Alcalá",
-    "address": "Calle de Alcalá, 21",
-    "city": "Madrid",
-    "openingHours": "10:00 - 14:00 and 17:00 - 20:30"
-  }];
 
-  constructor() { }
+  isDelivery: boolean = false;
+
+  cart: Product[] = [];
+  stores: Store[] = [];
+
+  constructor(private router: Router,
+    private dataServiceSvc: DataService,
+    private shoppingCartSvc: ShoppingCartService) { }
 
   ngOnInit(): void {
+    this.getStores();
+    this.getDataCart();
   }
 
   onPickupOrDelivery(isDelivery: boolean): void {
+    this.isDelivery = isDelivery;
+  }
 
+  onSubmit({ value: formData }: NgForm): void {
+    const data = {
+      ...formData,
+      data: this.getCurrentDate(),
+      pickup: this.isDelivery
+    }
+    this.dataServiceSvc.saveOrder(data).pipe(
+      tap(res => console.log('Order ->', res)),
+      switchMap(({ id: orderId }) => {
+        const details = this.prepareDetails();
+        return this.dataServiceSvc.saveDetailsOrder({ details, orderId })
+      }),
+      tap(res => this.router.navigate(['/checkout/thank-you-page'])),
+      delay(2000),
+      tap(res => this.shoppingCartSvc.resetCart())
+    ).subscribe();
+  }
+
+  private getStores(): void {
+    this.dataServiceSvc.getStores().pipe(
+      tap((stores: Store[]) => this.stores = stores)
+    ).subscribe();
+  }
+
+  private getCurrentDate(): string {
+    return new Date().toLocaleDateString();
+  }
+
+  private prepareDetails(): Details[] {
+    const details: Details[] = [];
+    this.cart.forEach((product: Product) => {
+      const { id: productId, name: productName, qty: quantity, stock } = product;
+      details.push({ productId, productName, quantity });
+    });
+    return details;
+  }
+  private getDataCart(): void {
+    this.shoppingCartSvc.cartAction$.pipe(
+      tap((products: Product[]) => this.cart = products)
+    ).subscribe();
   }
 }

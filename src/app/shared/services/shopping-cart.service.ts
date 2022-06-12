@@ -26,19 +26,24 @@ export class ShoppingCartService {
   get cartAction$(): Observable<Product[]> {
     return this.cartSubject.asObservable();
   }
-  
+
   private quantityProducts(): void {
-    const quantityNumber= this.products.length;
+    const quantityNumber = this.products.reduce((acc, prod) => acc += prod.qty, 0);
     this.quantitySubject.next(quantityNumber);
   }
 
   private calcTotal(): void {
-    const total = this.products.reduce((acc, prod) => acc += prod.price, 0)
+    const total = this.products.reduce((acc, prod) => acc += (prod.price * prod.qty), 0);
     this.totalSubject.next(total);
   }
 
   private addTocart(product: Product): void {
-    this.products.push(product);
+    const isProductInCart = this.products.find(({ id }) => id == product.id);
+    if (isProductInCart) {
+      isProductInCart.qty += 1;
+    } else {
+      this.products.push({... product, qty:1});
+    }
     this.cartSubject.next(this.products);
   }
 
@@ -46,5 +51,11 @@ export class ShoppingCartService {
     this.addTocart(product);
     this.quantityProducts();
     this.calcTotal();
+  }
+
+  resetCart():void{
+    this.cartSubject.next([]);
+    this.totalSubject.next(0);
+    this.quantitySubject.next(0);
   }
 }
